@@ -366,19 +366,19 @@ void ControlParameters::defineAndInitializeFromYamlFile(const std::string &path)
     collection.addParameter(cp, key);
     switch (cp->_kind) {
       case ControlParameterValueKind::DOUBLE: {
-        double d;
+        double d = 0.0;
         assert(paramHandler.getValue(key, d));
         cp->initializeDouble(d);
       } break;
 
       case ControlParameterValueKind::FLOAT: {
-        float f;
+        float f = 0.0f;
         assert(paramHandler.getValue(key, f));
         cp->initializeFloat(f);
       } break;
 
       case ControlParameterValueKind::S64: {
-        s64 f;
+        s64 f = 0;
         assert(paramHandler.getValue(key, f));
         cp->initializeInteger(f);
       } break;
@@ -445,19 +445,19 @@ void ControlParameters::initializeFromYamlFile(const std::string& path) {
     ControlParameter& cp = collection.lookup(key);
     switch (cp._kind) {
       case ControlParameterValueKind::DOUBLE: {
-        double d;
+        double d = 0.0;
         assert(paramHandler.getValue(key, d));
         cp.initializeDouble(d);
       } break;
 
       case ControlParameterValueKind::FLOAT: {
-        float f;
+        float f = 0.0f;
         assert(paramHandler.getValue(key, f));
         cp.initializeFloat(f);
       } break;
 
       case ControlParameterValueKind::S64: {
-        s64 f;
+        s64 f = 0;
         assert(paramHandler.getValue(key, f));
         cp.initializeInteger(f);
       } break;

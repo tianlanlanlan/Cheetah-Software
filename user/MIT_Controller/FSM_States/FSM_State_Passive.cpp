@@ -87,10 +87,10 @@ FSM_StateName FSM_State_Passive<T>::checkTransition() {
       break;
 
     default:
-      std::cout << "[CONTROL FSM] Bad Request: Cannot transition from "
-                << K_PASSIVE << " to "
-                << this->_data->controlParameters->control_mode << std::endl;
-  }
+      LOG(WARNING) << "[CONTROL FSM] Bad Request: Cannot transition from "
+                   << K_PASSIVE << " to "
+                   << this->_data->controlParameters->control_mode;
+    }
 
   // Get the next state
   return this->nextStateName;

@@ -11,24 +11,30 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
 
 #define termios asmtermios
+#define winsize asmwinsize
+#define termio asmtermio
 
 #include <asm/termios.h>
 
+#undef termio
+#undef winsize
 #undef termios
 
 #include <termios.h>
 #include <math.h>
 #include <pthread.h>
-#include <stropts.h>
+// #include <stropts.h>
 #include <endian.h>
 #include <stdint.h>
 
 #include "rt/rt_serial.h"
+#include "glog/logging.h"
 
 void init_serial_for_sbus(int fd, int baud) {
-  printf("\t[RT SERIAL] Configuring serial device...\n");
+  LOG(INFO) << "\t[RT SERIAL] Configuring serial device...";
   struct termios2 tty;
 
   ioctl(fd, TCGETS2, &tty);

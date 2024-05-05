@@ -2,6 +2,7 @@
 #define DATAREAD_CTRL
 
 #include "DataReader.hpp"
+#include "glog/logging.h"
 #include <Dynamics/FloatingBaseModel.h>
 #include <Controllers/LegController.h>
 
@@ -15,14 +16,14 @@ class DataReadCtrl {
     dt = _dt;
     _key_pt_step = ceil(dt*1000);
 
-  printf("dt: %f, step:%d\n", dt, _key_pt_step);
-  _Kp.resize(12);
-  _Kd.resize(12);
-  _des_jpos.resize(12);
-  _des_jvel.resize(12);
-  _jtorque.resize(12);
-  _Kp_joint.resize(3);
-  _Kd_joint.resize(3);
+    LOG(INFO) << "dt: " << dt << ", step: " << _key_pt_step;
+    _Kp.resize(12);
+    _Kd.resize(12);
+    _des_jpos.resize(12);
+    _des_jvel.resize(12);
+    _jtorque.resize(12);
+    _Kp_joint.resize(3);
+    _Kd_joint.resize(3);
   }
 
   ~DataReadCtrl() {};

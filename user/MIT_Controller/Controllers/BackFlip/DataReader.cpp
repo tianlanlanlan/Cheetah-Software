@@ -10,23 +10,22 @@ DataReader::DataReader(const RobotType& type, FSM_StateName stateNameIn) : _type
     if (stateNameIn == FSM_StateName::BACKFLIP) {
       //load_control_plan(THIS_COM "user/WBC_Controller/WBC_States/BackFlip/data/mc_flip.dat");
       load_control_plan(THIS_COM "config/mc_flip.dat");
-      printf("[Backflip DataReader] Setup for mini cheetah\n");
-    }
-    else if (stateNameIn == FSM_StateName::FRONTJUMP) {
+      LOG(INFO) << "[Backflip DataReader] Setup for mini cheetah";
+    } else if (stateNameIn == FSM_StateName::FRONTJUMP) {
       //load_control_plan(THIS_COM "user/MIT_Controller/Controllers/FrontJump/front_jump_data.dat"); // front_jump_data.dat for succesfull test 1 file
       load_control_plan(THIS_COM "config/front_jump_pitchup_v2.dat");
-      printf("[Front Jump DataReader] Setup for mini cheetah\n");
+      LOG(INFO) << "[Front Jump DataReader] Setup for mini cheetah";
     }
   } else {
     printf("[Backflip DataReader] Setup for cheetah 3\n");
     load_control_plan(THIS_COM "user/WBC_Controller/WBC_States/BackFlip/data/backflip.dat");
   }
-  printf("[Backflip DataReader] Constructed.\n");
+  LOG(INFO) << "[Backflip DataReader] Constructed";
 }
 
-void DataReader::load_control_plan(const char* filename) {
-  printf("[Backflip DataReader] Loading control plan %s...\n", filename);
-  FILE* f = fopen(filename, "rb");
+void DataReader::load_control_plan(const char *filename) {
+  LOG(INFO) << "[Backflip DataReader] Loading control plan " << filename;
+  FILE *f = fopen(filename, "rb");
   if (!f) {
     printf("[Backflip DataReader] Error loading control plan!\n");
     return;
@@ -35,10 +34,10 @@ void DataReader::load_control_plan(const char* filename) {
   uint64_t file_size = ftell(f);
   fseek(f, 0, SEEK_SET);
 
-  printf("[Backflip DataReader] Allocating %ld bytes for control plan\n",
-         file_size);
+  LOG(INFO) << "[Backflip DataReader] Allocating " << file_size
+            << " bytes for control plan";
 
-  plan_buffer = (float*)malloc(file_size + 1);
+  plan_buffer = (float *)malloc(file_size + 1);
 
   if (!plan_buffer) {
     printf("[Backflip DataReader] malloc failed!\n");
@@ -51,17 +50,16 @@ void DataReader::load_control_plan(const char* filename) {
   }
 
   if (file_size % sizeof(float)) {
-    printf(
-        "[Backflip DataReader] Error: file size isn't divisible by size of "
-        "float!\n");
+    printf("[Backflip DataReader] Error: file size isn't divisible by size of "
+           "float!\n");
   }
 
   fclose(f);
 
   plan_loaded = true;
   plan_timesteps = file_size / (sizeof(float) * plan_cols);
-  printf("[Backflip DataReader] Done loading plan for %d timesteps\n",
-         plan_timesteps);
+  LOG(INFO) << "[Backflip DataReader] Done loading plan for " << plan_timesteps
+            << " timesteps";
 }
 
 float* DataReader::get_initial_configuration() {

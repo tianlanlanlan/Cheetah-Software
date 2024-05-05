@@ -89,7 +89,7 @@ Graphics3D::Graphics3D(QWidget *parent)
       _v0(0, 0, 0),
       _freeCamFilter(1, 60, _v0)
 {
-  std::cout << "[SIM GRAPHICS] New graphics window. \n";
+  LOG(INFO) << "[SIM GRAPHICS] New graphics window.";
 
   _r[0] = 0.2422;
   _g[0] = 0.1504;
@@ -183,7 +183,7 @@ void Graphics3D::updateCameraMatrix() {
 }
 
 void Graphics3D::initializeGL() {
-  std::cout << "[Graphics3D] Initialize OpenGL...\n";
+  LOG(INFO) << "[Graphics3D] Initialize OpenGL...";
   _cameraTarget.setZero();
   initializeOpenGLFunctions();
   // create GPU shaders
@@ -385,8 +385,8 @@ void Graphics3D::renderDrawlist() {
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
-    printf("[Graphics 3D] Uploaded data (%f MB)\n",
-           _drawList.getGLDataSizeMB());
+    LOG(INFO) << "[Graphics 3D] Uploaded data (" << _drawList.getGLDataSizeMB()
+              << " MB)";
     glBindBuffer(GL_ARRAY_BUFFER, 0);
   }
 

@@ -18,6 +18,7 @@
  */
 template <typename T>
 Quadruped<T> buildMiniCheetah() {
+  LOG(INFO) << "build Mini Cheetah";
   Quadruped<T> cheetah;
   cheetah._robotType = RobotType::MINI_CHEETAH;
 

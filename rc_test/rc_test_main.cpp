@@ -4,6 +4,7 @@
 
 #include "rt/rt_sbus.h"
 #include "rt/rt_rc_interface.h"
+#include "glog/logging.h"
 
 static struct {
  double     mode;
@@ -77,6 +78,11 @@ void sbus_packet_complete() {
 
   auto left_select = data.left_lower_right_switch;
   auto right_select = data.right_lower_left_switch;
+
+  LOG_EVERY_N(INFO, 100) << "estop_switch = " << static_cast<int>(estop_switch);
+  LOG_EVERY_N(INFO, 100) << "left: " << data.left_stick[0] << " " << data.left_stick[1];
+  LOG_EVERY_N(INFO, 100) << "right: " << data.right_stick[0] << " " << data.right_stick[1];
+  LOG_EVERY_N(INFO, 100) << "knobs: " << data.knobs[0] << " " << data.knobs[1];
 
   switch(estop_switch) {
 

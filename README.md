@@ -7,6 +7,30 @@ The robot folder will contain the robot program
 The sim folder will contain the simulation program. It is the only program which depends on QT.
 The third-party will contain *small* third party libraries that we have modified. This should just be libsoem for Cheetah 3, which Pat modified at one point.
 
+## New build and run commands
+```shell
+# install dependencies
+$ sudo apt install \
+  openjdk-8-jdk \
+  ccache \
+  freeglut3-dev \
+  mesa-common-dev \
+  libblas-dev liblapack-dev \
+  -y
+
+# install conan
+$ pip install conan
+
+# build project
+$ sh scripts/build.sh 
+
+# run simulator
+$ sh scripts/run_sim.sh
+
+# run mit controller in other window
+sh scripts/run_robot.sh
+```
+
 ## Build
 To build all code:
 ```

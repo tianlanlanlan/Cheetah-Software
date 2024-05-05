@@ -1,6 +1,19 @@
 cmake_minimum_required(VERSION 3.5)
+
+project(Cheetah-Software)
+
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+  message(STATUS "Find ${CCACHE_PROGRAM}")
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+else()
+  message(WARNING "Not found ${CCACHE_PROGRAM}, install with 'sudo apt install ccache'")
+endif()
+
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES  ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# set(CMAKE_VERBOSE_MAKEFILE ON)
 
 if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   message(SEND_ERROR "In-source builds are not allowed.")
@@ -10,8 +23,6 @@ set(CMAKE_COLOR_MAKEFILE   ON)
 #execute_process(COMMAND ../scripts/make_types.sh)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-
-#set(CMAKE_VERBOSE_MAKEFILE ON)
 
 option(MINI_CHEETAH_BUILD "use compiler flags for mini cheetah computer" OFF)
 set(BUILD_TYPE_RELEASE TRUE)
@@ -50,9 +61,9 @@ else(MINI_CHEETAH_BUILD)
   message("**** Mini-Cheetah build disabled ****")
 endif(MINI_CHEETAH_BUILD)
 
-set(CMAKE_CXX_STANDARD 14)
-
 #find_package(lcm)
+find_package(glog REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 add_subdirectory(robot)
 add_subdirectory(third-party)

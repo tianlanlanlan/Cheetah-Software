@@ -15,9 +15,9 @@ add_library(lord_imu SHARED
         Source/mip_sdk_user_functions.c
         Source/byteswap_utilities.c
         LordImu.cpp)
-
+target_link_libraries(lord_imu Eigen3::Eigen)
 
 
 add_executable(test_imu test/lord_test.cpp)
 
-target_link_libraries(test_imu lord_imu)
+target_link_libraries(test_imu Eigen3::Eigen lord_imu)

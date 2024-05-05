@@ -16,6 +16,7 @@ Cheetah-3-Documentation-Control:
 */
 
 #include "BalanceController.hpp"
+#include "glog/logging.h"
 #include <iostream>
 // #include "Sim_Utils.h"
 
@@ -34,9 +35,9 @@ BalanceController::BalanceController()
 
   lcm = new lcm::LCM("udpm://239.255.76.67:7667?ttl=1");
   if (lcm->good()) {
-    printf("LCM IN BALANCE CONTROL INITIALIZED\n");
+    LOG(INFO) << "LCM IN BALANCE CONTROL INITIALIZED";
   } else {
-    printf("LCM IN BALANCE CONTROLLER FAILED\n");
+    LOG(FATAL) << "LCM IN BALANCE CONTROLLER FAILED";
     exit(-1);
   }
 

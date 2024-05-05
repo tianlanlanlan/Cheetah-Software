@@ -28,3 +28,6 @@ documentation/doxygen/html
 documentation/doxygen/latex
 .DS_Store
 tags
+.cache/
+lcm-types/lcm-gen
+CMakeUserPresets.json

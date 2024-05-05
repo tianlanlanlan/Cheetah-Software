@@ -32,21 +32,21 @@ void GameController::findNewController() {
   delete _qGamepad;
   _qGamepad = nullptr;  // in case this doesn't work!
 
-  printf("[Gamepad] Searching for gamepads, please ignore \"Device discovery cannot open device\" errors\n");
+  LOG(INFO) << "[Gamepad] Searching for gamepads, please ignore \"Device "
+               "discovery cannot open device\" errors";
   auto gamepadList = QGamepadManager::instance()->connectedGamepads();
-  printf("[Gamepad] Done searching for gamepads.\n");
+  LOG(INFO) << "[Gamepad] Done searching for gamepads.";
   if (gamepadList.empty()) {
-    printf(
-        "[ERROR: GameController] No controller was connected! All joystick "
-        "commands will be zero!\n");
+    LOG(ERROR)
+        << "[ERROR: GameController] No controller was connected! All joystick "
+           "commands will be zero!";
   } else {
     if (gamepadList.size() > 1) {
-      printf(
-          "[ERROR: GameController] There are %d joysticks connected.  Using "
-          "the first one.\n",
-          gamepadList.size());
+      LOG(INFO) << "[ERROR: GameController] There are " << gamepadList.size()
+                << " joysticks connected.  Using "
+                   "the first one.";
     } else {
-      printf("[GameController] Found 1 joystick\n");
+      LOG(INFO) << "[GameController] Found 1 joystick";
     }
 
     _qGamepad = new QGamepad(*gamepadList.begin());

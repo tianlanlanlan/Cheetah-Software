@@ -26,7 +26,9 @@
  * Setup QT and run a simulation
  */
 int main(int argc, char *argv[]) {
+  InitGLOG(argv[0]);
   install_segfault_handler(nullptr);
+  LOG(INFO) << "Start simulator";
   // set up Qt
   QApplication a(argc, argv);
 

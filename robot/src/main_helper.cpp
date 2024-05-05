@@ -57,19 +57,19 @@ int main_helper(int argc, char** argv, RobotController* ctrl) {
 
   if(argc == 4 && argv[3][0] == 'f') {
     gMasterConfig.load_from_file = true;
-    printf("Load parameters from file\n");
+    LOG(INFO) << "Load parameters from file";
   } else {
     gMasterConfig.load_from_file = false;
-    printf("Load parameters from network\n");
+    LOG(INFO) << "Load parameters from network";
   }
 
-  printf("[Quadruped] Cheetah Software\n");
-  printf("        Quadruped:  %s\n",
-         gMasterConfig._robot == RobotType::MINI_CHEETAH ? "Mini Cheetah"
-                                                         : "Cheetah 3");
-  printf("        Driver: %s\n", gMasterConfig.simulated
-                                     ? "Development Simulation Driver"
-                                     : "Quadruped Driver");
+  LOG(INFO) << "[Quadruped] Cheetah Software";
+  LOG(INFO) << "        Quadruped:  "
+            << (gMasterConfig._robot == RobotType::MINI_CHEETAH ? "Mini Cheetah"
+                                                                : "Cheetah 3");
+  LOG(INFO) << "        Driver: "
+            << (gMasterConfig.simulated ? "Development Simulation Driver"
+                                        : "Quadruped Driver");
 
   // dispatch the appropriate driver
   if (gMasterConfig.simulated) {
@@ -80,12 +80,12 @@ int main_helper(int argc, char** argv, RobotController* ctrl) {
     if (gMasterConfig._robot == RobotType::MINI_CHEETAH) {
       SimulationBridge simulationBridge(gMasterConfig._robot, ctrl);
       simulationBridge.run();
-      printf("[Quadruped] SimDriver run() has finished!\n");
+      LOG(INFO) << "[Quadruped] SimDriver run() has finished!";
     } else if (gMasterConfig._robot == RobotType::CHEETAH_3) {
       SimulationBridge simulationBridge(gMasterConfig._robot, ctrl);
       simulationBridge.run();
     } else {
-      printf("[ERROR] unknown robot\n");
+      LOG(ERROR) << "[ERROR] unknown robot";
       assert(false);
     }
   } else {

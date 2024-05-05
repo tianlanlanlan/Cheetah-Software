@@ -7,6 +7,8 @@
 #include "../../../../common/FootstepPlanner/GraphSearch.h"
 
 #include "Gait.h"
+#include "glog/logging.h"
+#include <iomanip> 
 
 //#define DRAW_DEBUG_SWINGS
 //#define DRAW_DEBUG_PATH
@@ -40,7 +42,8 @@ ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc,
   _parameters = parameters;
   dtMPC = dt * iterationsBetweenMPC;
   default_iterations_between_mpc = iterationsBetweenMPC;
-  printf("[Convex MPC] dt: %.3f iterations: %d, dtMPC: %.3f\n", dt, iterationsBetweenMPC, dtMPC);
+  LOG(INFO) << "[Convex MPC] dt: " << std::fixed << std::setprecision(15) << dt
+            << " iterations: " << iterationsBetweenMPC << ", dtMPC: " << dtMPC;
   setup_problem(dtMPC, horizonLength, 0.4, 120);
   //setup_problem(dtMPC, horizonLength, 0.4, 650); // DH
   rpy_comp[0] = 0;

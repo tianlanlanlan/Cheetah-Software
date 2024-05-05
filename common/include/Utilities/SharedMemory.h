@@ -18,6 +18,7 @@
 #include <string>
 
 #include "cTypes.h"
+#include "glog/logging.h"
 
 
 #define DEVELOPMENT_SIMULATOR_SHARED_MEMORY_NAME "development-simulator"
@@ -133,43 +134,44 @@ class SharedMemoryObject {
     assert(!_data);
     _name = name;
     _size = sizeof(T);
-    printf("[Shared Memory] open new %s, size %ld bytes\n", name.c_str(),
-           _size);
+    LOG(INFO) << "[Shared Memory] open new " << name.c_str() << ", size "
+              << _size << " bytes";
 
     _fd = shm_open(name.c_str(), O_RDWR | O_CREAT, 
                    S_IWUSR | S_IRUSR | S_IWGRP | S_IRGRP | S_IROTH);
-     if (_fd == -1) {
-      printf("[ERROR] SharedMemoryObject shm_open failed: %s\n",
-             strerror(errno));
+    if (_fd == -1) {
+      LOG(ERROR) << "[ERROR] SharedMemoryObject shm_open failed: "
+                 << strerror(errno);
       throw std::runtime_error("Failed to create shared memory!");
       return false;
     }
 
     struct stat s;
     if (fstat(_fd, &s)) {
-      printf("[ERROR] SharedMemoryObject::createNew(%s) stat: %s\n",
-             name.c_str(), strerror(errno));
+      LOG(ERROR) << "[ERROR] SharedMemoryObject::createNew(" << name.c_str()
+                 << ") stat: " << strerror(errno);
       throw std::runtime_error("Failed to create shared memory!");
       return false;
     }
 
     if (s.st_size) {
-      printf(
-          "[Shared Memory] SharedMemoryObject::createNew(%s) on something that "
-          "wasn't new (size is %ld bytes)\n",
-          _name.c_str(), s.st_size);
+      LOG(INFO) << "[Shared Memory] SharedMemoryObject::createNew("
+                << _name.c_str()
+                << ") on something that "
+                   "wasn't new (size is "
+                << s.st_size << " bytes)";
       hadToDelete = true;
       if (!allowOverwrite)
         throw std::runtime_error(
             "Failed to create shared memory - it already exists.");
 
-      printf("\tusing existing shared memory!\n");
+      LOG(INFO) << "\tusing existing shared memory!";
       // return false;
     }
 
     if (ftruncate(_fd, _size)) {
-      printf("[ERROR] SharedMemoryObject::createNew(%s) ftruncate(%ld): %s\n",
-             name.c_str(), _size, strerror(errno));
+      LOG(ERROR) << "[ERROR] SharedMemoryObject::createNew(" << name.c_str()
+                 << ") ftruncate(" << _size << "): " << strerror(errno);
       throw std::runtime_error("Failed to create shared memory!");
       return false;
     }
@@ -177,8 +179,8 @@ class SharedMemoryObject {
     void* mem =
         mmap(nullptr, _size, PROT_READ | PROT_WRITE, MAP_SHARED, _fd, 0);
     if (mem == MAP_FAILED) {
-      printf("[ERROR] SharedMemory::createNew(%s) mmap fail: %s\n",
-             _name.c_str(), strerror(errno));
+      LOG(ERROR) << "[ERROR] SharedMemory::createNew(" << _name.c_str()
+                 << ") mmap fail: " << strerror(errno);
       throw std::runtime_error("Failed to create shared memory!");
       return false;
     }
@@ -199,8 +201,8 @@ class SharedMemoryObject {
     assert(!_data);
     _name = name;
     _size = sizeof(T);
-    printf("[Shared Memory] open existing %s size %ld bytes\n", name.c_str(),
-           _size);
+    LOG(INFO) << "[Shared Memory] open existing " << name.c_str() << " size "
+              << _size << " bytes";
     _fd = shm_open(name.c_str(), O_RDWR,
                    S_IWUSR | S_IRUSR | S_IWGRP | S_IRGRP | S_IROTH);
     if (_fd == -1) {

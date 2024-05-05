@@ -15,6 +15,7 @@
 #include "Utilities/Utilities_print.h"
 #include "ParamHandler.hpp"
 #include "Utilities/Timer.h"
+#include "Utilities/utilities.h"
 #include "Controllers/PositionVelocityEstimator.h"
 //#include "rt/rt_interface_lcm.h"
 
@@ -32,7 +33,7 @@ RobotRunner::RobotRunner(RobotController* robot_ctrl,
  * robot data, and any control logic specific data.
  */
 void RobotRunner::init() {
-  printf("[RobotRunner] initialize\n");
+  LOG(INFO) << "[RobotRunner] initialize";
 
   // Build the appropriate Quadruped object
   if (robotType == RobotType::MINI_CHEETAH) {
@@ -103,7 +104,8 @@ void RobotRunner::run() {
     _legController->setEnabled(true);
 
     if( (rc_control.mode == 0) && controlParameters->use_rc ) {
-      if(count_ini%1000 ==0)   printf("ESTOP!\n");
+      if (count_ini % 1000 == 0)
+        LOG(WARNING) << "ESTOP!";
       for (int leg = 0; leg < 4; leg++) {
         _legController->commands[leg].zero();
       }

@@ -3,6 +3,8 @@
 
 #include "VisionMPCLocomotion.h"
 #include "VisionMPC_interface.h"
+#include "glog/logging.h"
+#include <iomanip> 
 
 
 ///////////////
@@ -18,13 +20,12 @@ VisionGait::VisionGait(int nMPC_segments, Vec4<int> offsets,
 
   _offsetsFloat = offsets.cast<float>() / (float) nMPC_segments;
   _durationsFloat = durations.cast<float>() / (float) nMPC_segments;
-  std::cout << "VisionGait " << name << "\n";
-  std::cout << "nMPC_segments    : " << _nIterations << "\n";
-  std::cout << "offsets (int)    : " << _offsets.transpose() << "\n";
-  std::cout << "durations (int)  : " << _durations.transpose() << "\n";
-  std::cout << "offsets (float)  : " << _offsetsFloat.transpose() << "\n";
-  std::cout << "durations (float): " << _durationsFloat.transpose() << "\n";
-  std::cout << "\n\n";
+  LOG(INFO) << "VisionGait " << name;
+  LOG(INFO) << "nMPC_segments    : " << _nIterations;
+  LOG(INFO) << "offsets (int)    : " << _offsets.transpose();
+  LOG(INFO) << "durations (int)  : " << _durations.transpose();
+  LOG(INFO) << "offsets (float)  : " << _offsetsFloat.transpose();
+  LOG(INFO) << "durations (float): " << _durationsFloat.transpose();
 
   _stance = durations[0];
   _swing = nMPC_segments - durations[0];
@@ -121,8 +122,8 @@ VisionMPCLocomotion::VisionMPCLocomotion(float _dt, int _iterations_between_mpc,
 {
   _parameters = parameters;
   dtMPC = dt * iterationsBetweenMPC;
-  printf("[Vision MPC] dt: %.3f iterations: %d, dtMPC: %.3f\n",
-      dt, iterationsBetweenMPC, dtMPC);
+  LOG(INFO) << "[Vision MPC] dt: " << std::fixed << std::setprecision(15) << dt
+            << " iterations: " << iterationsBetweenMPC << ", dtMPC: " << dtMPC;
   vision_setup_problem(dtMPC, horizonLength, 0.4, 120);
   rpy_comp[0] = 0;
   rpy_comp[1] = 0;

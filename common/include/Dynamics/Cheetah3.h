@@ -32,6 +32,7 @@ using namespace spatial;
  */
 template <typename T>
 Quadruped<T> buildCheetah3() {
+  LOG(INFO) << "build Cheetah3";
   Quadruped<T> cheetah;
   cheetah._robotType = RobotType::CHEETAH_3;
 

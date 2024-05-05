@@ -13,6 +13,15 @@
 #include <vector>
 #include "cppTypes.h"
 
+#include "glog/logging.h"
+
+/**
+ * @brief Init glog
+ * 
+ * @param name: process name
+ */
+extern void InitGLOG(char *name);
+
 /*!
  * Are two floating point values almost equal?
  * @param a : first value

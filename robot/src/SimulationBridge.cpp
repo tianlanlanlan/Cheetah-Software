@@ -9,6 +9,7 @@
 #include "Controllers/LegController.h"
 #include "rt/rt_rc_interface.h"
 #include "rt/rt_sbus.h"
+#include "glog/logging.h"
 
 /*!
  * Connect to a simulation
@@ -23,7 +24,7 @@ void SimulationBridge::run() {
   // init Quadruped Controller
 
   try {
-    printf("[Simulation Driver] Starting main loop...\n");
+    LOG(INFO) << "[Simulation Driver] Starting main loop...";
     bool firstRun = true;
     for (;;) {
       // wait for our turn to access the shared memory
@@ -45,6 +46,13 @@ void SimulationBridge::run() {
 
       // the simulator tells us which mode to run in
       _simMode = _sharedMemory().simToRobot.mode;
+      {
+        static SimulatorMode simMode = static_cast<SimulatorMode>(-1);
+        LOG_IF(INFO, simMode != _simMode)
+            << "simMode: " << static_cast<int>(simMode) << " -> "
+            << static_cast<int>(_simMode);
+        simMode = _simMode;
+      }
       switch (_simMode) {
         case SimulatorMode::RUN_CONTROL_PARAMETERS:  // there is a new control
           // parameter request
@@ -70,7 +78,7 @@ void SimulationBridge::run() {
       _sharedMemory().robotIsDone();
     }
   } catch (std::exception& e) {
-    strncpy(_sharedMemory().robotToSim.errorMessage, e.what(), sizeof(_sharedMemory().robotToSim.errorMessage));
+    strncpy(_sharedMemory().robotToSim.errorMessage, e.what(), sizeof(_sharedMemory().robotToSim.errorMessage) - 1);
     _sharedMemory().robotToSim.errorMessage[sizeof(_sharedMemory().robotToSim.errorMessage) - 1] = '\0';
     throw e;
   }
@@ -87,15 +95,16 @@ void SimulationBridge::handleControlParameters() {
       _sharedMemory().robotToSim.controlParameterResponse;
   if (request.requestNumber <= response.requestNumber) {
     // nothing to do!
-    printf(
-        "[SimulationBridge] Warning: the simulator has run a ControlParameter "
-        "iteration, but there is no new request!\n");
+    LOG(WARNING) << "[SimulationBridge] Warning: the simulator has run a "
+                    "ControlParameter "
+                    "iteration, but there is no new request!";
     return;
   }
 
   // sanity check
   u64 nRequests = request.requestNumber - response.requestNumber;
   assert(nRequests == 1);
+  static_cast<void>(nRequests);
 
   response.nParameters = _robotParams.collection._map
                              .size();  // todo don't do this every single time?
@@ -127,7 +136,7 @@ void SimulationBridge::handleControlParameters() {
              name.c_str());  // just for debugging print statements
       response.requestKind = request.requestKind;
 
-      printf("%s\n", response.toString().c_str());
+      LOG(INFO) << response.toString().c_str();
 
     } break;
 
@@ -161,7 +170,7 @@ void SimulationBridge::handleControlParameters() {
              name.c_str());  // just for debugging print statements
       response.requestKind = request.requestKind;
 
-      printf("%s\n", response.toString().c_str());
+      LOG(INFO) << response.toString().c_str();
 
     } break;
 
@@ -188,7 +197,7 @@ void SimulationBridge::handleControlParameters() {
       response.requestKind =
           request.requestKind;  // just for debugging print statements
 
-      printf("%s\n", response.toString().c_str());
+      LOG(INFO) << response.toString().c_str();
     } break;
     default:
       throw std::runtime_error("unhandled get/set");
@@ -199,29 +208,31 @@ void SimulationBridge::handleControlParameters() {
  * Run the robot controller
  */
 void SimulationBridge::runRobotControl() {
+  // LOG(INFO) << "runRobotControl";
   if (_firstControllerRun) {
-    printf("[Simulator Driver] First run of robot controller...\n");
+    LOG(INFO) << "[Simulator Driver] First run of robot controller...";
     if (_robotParams.isFullyInitialized()) {
-      printf("\tAll %ld control parameters are initialized\n",
-             _robotParams.collection._map.size());
+      LOG(INFO) << "All " << _robotParams.collection._map.size()
+                << " control parameters are initialized";
     } else {
-      printf(
-          "\tbut not all control parameters were initialized. Missing:\n%s\n",
-          _robotParams.generateUnitializedList().c_str());
+      LOG(WARNING)
+          << "but not all control parameters were initialized. Missing:\n"
+          << _robotParams.generateUnitializedList().c_str();
       throw std::runtime_error(
           "not all parameters initialized when going into RUN_CONTROLLER");
     }
 
-    auto* userControlParameters = _robotRunner->_robot_ctrl->getUserControlParameters();
-    if(userControlParameters) {
+    auto *userControlParameters =
+        _robotRunner->_robot_ctrl->getUserControlParameters();
+    if (userControlParameters) {
       if (userControlParameters->isFullyInitialized()) {
-        printf("\tAll %ld user parameters are initialized\n",
-               userControlParameters->collection._map.size());
+        LOG(INFO) << "All " << userControlParameters->collection._map.size()
+                  << " user parameters are initialized";
         _simMode = SimulatorMode::RUN_CONTROLLER;
       } else {
-        printf(
-            "\tbut not all control parameters were initialized. Missing:\n%s\n",
-            userControlParameters->generateUnitializedList().c_str());
+        LOG(WARNING)
+            << "but not all control parameters were initialized. Missing:\n"
+            << userControlParameters->generateUnitializedList().c_str();
         throw std::runtime_error(
             "not all parameters initialized when going into RUN_CONTROLLER");
       }
@@ -258,7 +269,7 @@ void SimulationBridge::runRobotControl() {
  * Run the RC receive thread
  */
 void SimulationBridge::run_sbus() {
-  printf("[run_sbus] starting...\n");
+  LOG(INFO) << "[run_sbus] starting...";
   int port = init_sbus(true);  // Simulation
   while (true) {
     if (port > 0) {

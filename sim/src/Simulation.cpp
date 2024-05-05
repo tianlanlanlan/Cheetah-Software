@@ -6,6 +6,7 @@
 #include <include/GameController.h>
 #include <unistd.h>
 #include <fstream>
+#include "glog/logging.h"
 
 // if DISABLE_HIGH_LEVEL_CONTROL is defined, the simulator will run freely,
 // without trying to connect to a robot
@@ -20,7 +21,7 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
     : _simParams(params), _userParams(userParams), _tau(12) {
   _uiUpdate = uiUpdate;
   // init parameters
-  printf("[Simulation] Load parameters...\n");
+  LOG(INFO) << "[Simulation] Load parameters...";
   _simParams
       .lockMutex();  // we want exclusive access to the simparams at this point
   if (!_simParams.isFullyInitialized()) {
@@ -33,26 +34,26 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
 
   // init LCM
   if (_simParams.sim_state_lcm) {
-    printf("[Simulation] Setup LCM...\n");
+    LOG(INFO) << "[Simulation] Setup LCM...";
     _lcm = new lcm::LCM(getLcmUrl(_simParams.sim_lcm_ttl));
     if (!_lcm->good()) {
-      printf("[ERROR] Failed to set up LCM\n");
+      LOG(ERROR) << "[ERROR] Failed to set up LCM";
       throw std::runtime_error("lcm bad");
     }
   }
 
   // init quadruped info
-  printf("[Simulation] Build quadruped...\n");
+  LOG(INFO) << "[Simulation] Build quadruped...";
   _robot = robot;
   _quadruped = _robot == RobotType::MINI_CHEETAH ? buildMiniCheetah<double>()
                                                  : buildCheetah3<double>();
-  printf("[Simulation] Build actuator model...\n");
+  LOG(INFO) << "[Simulation] Build actuator model...";
   _actuatorModels = _quadruped.buildActuatorModels();
   _window = window;
 
   // init graphics
   if (_window) {
-    printf("[Simulation] Setup Cheetah graphics...\n");
+    LOG(INFO) << "[Simulation] Setup Cheetah graphics...";
     Vec4<float> truthColor, seColor;
     truthColor << 0.2, 0.4, 0.2, 0.6;
     seColor << .75,.75,.75, 1.0;
@@ -64,7 +65,7 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   }
 
   // init rigid body dynamics
-  printf("[Simulation] Build rigid body model...\n");
+  LOG(INFO) << "[Simulation] Build rigid body model...";
   _model = _quadruped.buildModel();
   _robotDataModel = _quadruped.buildModel();
   _simulator =
@@ -153,7 +154,7 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   setRobotState(x0);
   _robotDataSimulator->setState(x0);
 
-  printf("[Simulation] Setup low-level control...\n");
+  LOG(INFO) << "[Simulation] Setup low-level control...";
   // init spine:
   if (_robot == RobotType::MINI_CHEETAH) {
     for (int leg = 0; leg < 4; leg++) {
@@ -179,7 +180,7 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   }
 
   // init shared memory
-  printf("[Simulation] Setup shared memory...\n");
+  LOG(INFO) << "[Simulation] Setup shared memory...";
   _sharedMemory.createNew(DEVELOPMENT_SIMULATOR_SHARED_MEMORY_NAME, true);
   _sharedMemory().init();
 
@@ -189,7 +190,7 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
       &_sharedMemory().robotToSim.visualizationData;
 
   // load robot control parameters
-  printf("[Simulation] Load control parameters...\n");
+  LOG(INFO) << "[Simulation] Load control parameters...";
   if (_robot == RobotType::MINI_CHEETAH) {
     _robotParams.initializeFromYamlFile(getConfigDirectoryPath() +
                                         MINI_CHEETAH_DEFAULT_PARAMETERS);
@@ -206,11 +207,11 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
     throw std::runtime_error("not all parameters initialized from ini file");
   }
   // init IMU simulator
-  printf("[Simulation] Setup IMU simulator...\n");
+  LOG(INFO) << "[Simulation] Setup IMU simulator...";
   _imuSimulator = new ImuSimulator<double>(_simParams);
 
   _simParams.unlockMutex();
-  printf("[Simulation] Ready!\n");
+  LOG(INFO) << "[Simulation] Ready!";
 }
 
 void Simulation::sendControlParameter(const std::string& name,
@@ -232,7 +233,7 @@ void Simulation::sendControlParameter(const std::string& name,
   strcpy(request.name, name.c_str());
   request.value = value;
   request.parameterKind = kind;
-  printf("%s\n", request.toString().c_str());
+  LOG(INFO) << request.toString().c_str();
 
   // run robot:
   _robotMutex.lock();
@@ -265,17 +266,15 @@ void Simulation::handleControlError() {
   _running = false;
   _connected = false;
   _uiUpdate();
-  if(!_sharedMemory().robotToSim.errorMessage[0]) {
-    printf(
-      "[ERROR] Control code timed-out!\n");
+  if (!_sharedMemory().robotToSim.errorMessage[0]) {
+    LOG(ERROR) << "[ERROR] Control code timed-out!";
     _errorCallback("Control code has stopped responding without giving an error message.\nIt has likely crashed - "
                    "check the output of the control code for more information");
 
   } else {
-    printf("[ERROR] Control code has an error!\n");
+    LOG(ERROR) << "[ERROR] Control code has an error!";
     _errorCallback("Control code has an error:\n" + std::string(_sharedMemory().robotToSim.errorMessage));
   }
-
 }
 
 /*!
@@ -288,7 +287,7 @@ void Simulation::firstRun() {
   _sharedMemory().simToRobot.mode = SimulatorMode::DO_NOTHING;
   _sharedMemory().simulatorIsDone();
 
-  printf("[Simulation] Waiting for robot...\n");
+  LOG(INFO) << "[Simulation] Waiting for robot...";
 
   // this loop will check to see if the robot is connected at 10 Hz
   // doing this in a loop allows us to click the "stop" button in the GUI
@@ -299,13 +298,13 @@ void Simulation::firstRun() {
     }
     usleep(100000);
   }
-  printf("Success! the robot is alive\n");
+  LOG(INFO) <<"Success! the robot is alive";
   _connected = true;
   _uiUpdate();
   _robotMutex.unlock();
 
   // send all control parameters
-  printf("[Simulation] Send robot control parameters to robot...\n");
+  LOG(INFO) << "[Simulation] Send robot control parameters to robot...";
   for (auto& kv : _robotParams.collection._map) {
     sendControlParameter(kv.first, kv.second->get(kv.second->_kind),
                          kv.second->_kind, false);
@@ -608,12 +607,11 @@ void Simulation::runAtSpeed(std::function<void(std::string)> errorCallback, bool
   double frameTime = 1. / 60.;
   double lastSimTime = 0;
 
-  printf(
-      "[Simulator] Starting run loop (dt %f, dt-low-level %f, dt-high-level %f "
-      "speed %f graphics %d)...\n",
-      _simParams.dynamics_dt, _simParams.low_level_dt, _simParams.high_level_dt,
-      _simParams.simulation_speed, graphics);
-
+  LOG(INFO) << "[Simulator] Starting run loop (dt " << _simParams.dynamics_dt
+            << ", dt-low-level " << _simParams.low_level_dt
+            << ", dt-high-level " << _simParams.high_level_dt << ", speed "
+            << _simParams.simulation_speed << ", graphics " << graphics
+            << ")...";
   while (_running) {
     double dt = _simParams.dynamics_dt;
     double dtLowLevelControl = _simParams.low_level_dt;
@@ -657,11 +655,11 @@ void Simulation::runAtSpeed(std::function<void(std::string)> errorCallback, bool
 
 void Simulation::loadTerrainFile(const std::string& terrainFileName,
                                  bool addGraphics) {
-  printf("load terrain %s\n", terrainFileName.c_str());
+  LOG(INFO) << "load terrain " << terrainFileName.c_str();
   ParamHandler paramHandler(terrainFileName);
 
   if (!paramHandler.fileOpenedSuccessfully()) {
-    printf("[ERROR] could not open yaml file for terrain\n");
+    LOG(INFO) << "[ERROR] could not open yaml file for terrain";
     throw std::runtime_error("yaml bad");
   }
 
@@ -688,7 +686,7 @@ void Simulation::loadTerrainFile(const std::string& terrainFileName,
       for (size_t i = 0; i < idx; i++) val[i] = v[i];
     };
 
-    printf("terrain element %s\n", key.c_str());
+    LOG(INFO) << "terrain element " << key.c_str();
     std::string typeName;
     paramHandler.getString(key, "type", typeName);
     if (typeName == "infinite-plane") {

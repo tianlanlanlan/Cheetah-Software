@@ -1,5 +1,5 @@
 # Minimum version required
-cmake_minimum_required (VERSION 3.2)
+cmake_minimum_required(VERSION 3.5)
 
 # Project name
 project (qdldl)
@@ -12,7 +12,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/out)
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/configure/cmake)
 
 # Export compilation commands for IDEs and autocompletion
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Options
 # ----------------------------------------------

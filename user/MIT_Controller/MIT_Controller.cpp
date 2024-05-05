@@ -1,4 +1,5 @@
 #include "MIT_Controller.hpp"
+#include "glog/logging.h"
 
 MIT_Controller::MIT_Controller():RobotController(){  }
 
@@ -25,6 +26,7 @@ void MIT_Controller::initializeController() {
  * Calculate the commands for the leg controllers using the ControlFSM logic.
  */
 void MIT_Controller::runController() {
+  // LOG(INFO) << "MIT_Controller running";
   // Find the current gait schedule
   _gaitScheduler->step();
 

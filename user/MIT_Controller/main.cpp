@@ -9,7 +9,9 @@
 #include <main_helper.h>
 #include "MIT_Controller.hpp"
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
+  InitGLOG(argv[0]);
+  LOG(INFO) << "Start mit controler";
   main_helper(argc, argv, new MIT_Controller());
   return 0;
 }

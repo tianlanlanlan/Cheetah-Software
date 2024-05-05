@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6.0)
+cmake_minimum_required(VERSION 3.5)
 
 # pull in the pods macros. See cmake/pods.cmake for documentation
 set(POD_NAME lcm-log2smat)

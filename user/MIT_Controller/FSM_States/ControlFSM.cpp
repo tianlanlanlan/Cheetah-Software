@@ -7,6 +7,7 @@
 
 #include "ControlFSM.h"
 #include <rt/rt_rc_interface.h>
+#include "glog/logging.h"
 
 /**
  * Constructor for the Control FSM. Passes in all of the necessary
@@ -95,6 +96,7 @@ void ControlFSM<T>::runFSM() {
 
   // Check the robot state for safe operation
   operatingMode = safetyPreCheck();
+  // LOG(INFO) << "operatingMode = " << static_cast<int>(operatingMode);
 
   if(data.controlParameters->use_rc){
     int rc_mode = data._desiredStateCommand->rcCommand->mode;
@@ -114,7 +116,7 @@ void ControlFSM<T>::runFSM() {
       data.controlParameters->control_mode = K_BACKFLIP;
    }
       //data.controlParameters->control_mode = K_FRONTJUMP;
-    //std::cout<< "control mode: "<<data.controlParameters->control_mode<<std::endl;
+    //LOG(INFO)<< "control mode: "<<data.controlParameters->control_mode<<std::endl;
   }
 
   // Run the robot control code if operating mode is not unsafe
@@ -122,7 +124,12 @@ void ControlFSM<T>::runFSM() {
     // Run normal controls if no transition is detected
     if (operatingMode == FSM_OperatingMode::NORMAL) {
       // Check the current state for any transition
+      // LOG(INFO) << "control_mode = " << currentState->_data->controlParameters->control_mode;
       nextStateName = currentState->checkTransition();
+      // LOG(INFO) << "currentState = " << currentState->stateString;
+      // LOG(INFO) << "nextStateName = " << static_cast<int>(nextStateName);
+      // LOG(INFO) << "currentState->stateName = "
+      //           << static_cast<int>(currentState->stateName);
 
       // Detect a commanded transition
       if (nextStateName != currentState->stateName) {
@@ -196,7 +203,7 @@ FSM_OperatingMode ControlFSM<T>::safetyPreCheck() {
   if (currentState->checkSafeOrientation && data.controlParameters->control_mode != K_RECOVERY_STAND) {
     if (!safetyChecker->checkSafeOrientation()) {
       operatingMode = FSM_OperatingMode::ESTOP;
-      std::cout << "broken: Orientation Safety Ceck FAIL" << std::endl;
+      LOG(INFO) << "broken: Orientation Safety Ceck FAIL" << std::endl;
     }
   }
 
@@ -214,8 +221,9 @@ FSM_OperatingMode ControlFSM<T>::safetyPreCheck() {
  *
  * @return the appropriate operating mode
  */
-template <typename T>
-FSM_OperatingMode ControlFSM<T>::safetyPostCheck() {
+template <typename T> FSM_OperatingMode ControlFSM<T>::safetyPostCheck() {
+  // LOG(INFO) << currentState->checkPDesFoot << " "
+  //           << currentState->checkForceFeedForward;
   // Check for safe desired foot positions
   if (currentState->checkPDesFoot) {
     safetyChecker->checkPDesFoot();
@@ -294,25 +302,25 @@ void ControlFSM<T>::printInfo(int opt) {
 
       // Print at commanded frequency
       if (printIter == printNum) {
-        std::cout << "[CONTROL FSM] Printing FSM Info...\n";
-        std::cout
+        LOG(INFO) << "[CONTROL FSM] Printing FSM Info...\n";
+        LOG(INFO)
             << "---------------------------------------------------------\n";
-        std::cout << "Iteration: " << iter << "\n";
+        LOG(INFO) << "Iteration: " << iter << "\n";
         if (operatingMode == FSM_OperatingMode::NORMAL) {
-          std::cout << "Operating Mode: NORMAL in " << currentState->stateString
+          LOG(INFO) << "Operating Mode: NORMAL in " << currentState->stateString
                     << "\n";
 
         } else if (operatingMode == FSM_OperatingMode::TRANSITIONING) {
-          std::cout << "Operating Mode: TRANSITIONING from "
+          LOG(INFO) << "Operating Mode: TRANSITIONING from "
                     << currentState->stateString << " to "
                     << nextState->stateString << "\n";
 
         } else if (operatingMode == FSM_OperatingMode::ESTOP) {
-          std::cout << "Operating Mode: ESTOP\n";
+          LOG(INFO) << "Operating Mode: ESTOP\n";
         }
-        std::cout << "Gait Type: " << data._gaitScheduler->gaitData.gaitName
+        LOG(INFO) << "Gait Type: " << data._gaitScheduler->gaitData.gaitName
                   << "\n";
-        std::cout << std::endl;
+        LOG(INFO) << std::endl;
 
         // Reset iteration counter
         printIter = 0;
@@ -325,7 +333,7 @@ void ControlFSM<T>::printInfo(int opt) {
       break;
 
     case 1:  // Initializing FSM State transition
-      std::cout << "[CONTROL FSM] Transition initialized from "
+      LOG(INFO) << "[CONTROL FSM] Transition initialized from "
                 << currentState->stateString << " to " << nextState->stateString
                 << "\n"
                 << std::endl;
@@ -333,7 +341,7 @@ void ControlFSM<T>::printInfo(int opt) {
       break;
 
     case 2:  // Finalizing FSM State transition
-      std::cout << "[CONTROL FSM] Transition finalizing from "
+      LOG(INFO) << "[CONTROL FSM] Transition finalizing from "
                 << currentState->stateString << " to " << nextState->stateString
                 << "\n"
                 << std::endl;

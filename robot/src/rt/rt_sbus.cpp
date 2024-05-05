@@ -27,6 +27,7 @@
 //#include "rt/rt_interface_lcm.h"
 #include "rt/rt_sbus.h"
 #include "rt/rt_serial.h"
+#include "Utilities/utilities.h"
 
 pthread_mutex_t sbus_data_m;
 
@@ -165,7 +166,7 @@ int init_sbus(int is_simulator) {
 
   int fd1 = open(port1.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
   if (fd1 < 0) {
-    printf("Error opening %s: %s\n", port1.c_str(), strerror(errno));
+    LOG(ERROR) << "Error opening " << port1.c_str() << ": " << strerror(errno);
   } else {
     init_serial_for_sbus(fd1, 100000);
 #ifdef linux
@@ -188,11 +189,10 @@ static TaranisSwitchState map_switch(uint16_t in) {
     case 172:
       return TaranisSwitchState::SWITCH_UP;
     default:
-      printf("[SBUS] switch returned bad value %d\n", in);
+      LOG_EVERY_N(ERROR, 100) << "[SBUS] switch returned bad value " << in;
       return TaranisSwitchState::SWITCH_UP;
-  }
+    }
 }
-
 
 void update_taranis_x7(Taranis_X7_data* data) {
   pthread_mutex_lock(&sbus_data_m);

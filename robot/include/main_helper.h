@@ -8,6 +8,7 @@
 
 #include "Types.h"
 #include "RobotController.h"
+#include "Utilities/utilities.h"
 
 extern MasterConfig gMasterConfig;
 int main_helper(int argc, char** argv, RobotController* ctrl);

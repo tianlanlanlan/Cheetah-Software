@@ -1,11 +1,11 @@
 # Minimum version required
-cmake_minimum_required (VERSION 3.2)
+cmake_minimum_required(VERSION 3.5)
 
 # Project name
 project (osqp)
 
 # Export compile commands
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Set the output folder where your program will be created
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/out)

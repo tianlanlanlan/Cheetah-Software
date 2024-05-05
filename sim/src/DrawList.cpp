@@ -8,7 +8,7 @@
 #include "DrawList.h"
 
 void DrawList::loadFiles() {
-  printf("[DrawList] Load object files...\n");
+  LOG(INFO) << "[DrawList] Load object files...";
   std::vector<std::string> names = {
       "c3_body.obj",         "mini_abad.obj",
       "c3_upper_link.obj",   "c3_lower_link.obj",

@@ -9,6 +9,7 @@
  */
 
 #include "Controllers/GaitScheduler.h"
+#include "glog/logging.h"
 
 /*=========================== Gait Data ===============================*/
 /**
@@ -70,7 +71,7 @@ GaitScheduler<T>::GaitScheduler(MIT_UserParameters* _userParameters, float _dt) 
  */
 template <typename T>
 void GaitScheduler<T>::initialize() {
-  std::cout << "[GAIT] Initialize Gait Scheduler" << std::endl;
+  LOG(INFO) << "[GAIT] Initialize Gait Scheduler";
 
   // Start the gait in a trot since we use this the most
   gaitData._currentGait = GaitType::STAND;
@@ -274,8 +275,7 @@ void GaitScheduler<T>::modifyGait() {
 template <typename T>
 void GaitScheduler<T>::createGait() {
 
-  std::cout << "[GAIT] Transitioning gait from " << gaitData.gaitName
-            << " to ";
+  std::string cur_gait = gaitData.gaitName;
 
   // Case structure gets the appropriate parameters
   switch (gaitData._nextGait) {
@@ -463,7 +463,8 @@ void GaitScheduler<T>::createGait() {
   // Gait has switched
   gaitData._currentGait = gaitData._nextGait;
 
-  std::cout << gaitData.gaitName << "\n" << std::endl;
+  LOG(INFO) << "[GAIT] Transitioning gait from" << cur_gait << " to "
+            << gaitData.gaitName;
 
   // Calculate the auxilliary gait information
   calcAuxiliaryGaitData();

@@ -96,7 +96,7 @@ SimControlPanel::SimControlPanel(QWidget* parent)
   }
 
   if(!_loadedUserSettings) {
-    printf("[SimControlPanel] Failed to load default user settings!\n");
+    LOG(FATAL) << "[SimControlPanel] Failed to load default user settings!";
     throw std::runtime_error("Failed to load default user settings!");
   } else {
     // display user settings in qtable if we loaded successfully
@@ -104,7 +104,7 @@ SimControlPanel::SimControlPanel(QWidget* parent)
   }
 
   // load simulator parameters
-  printf("[SimControlPanel] Init simulator parameters...\n");
+  LOG(INFO) << "[SimControlPanel] Init simulator parameters...";
   _parameters.initializeFromYamlFile(getConfigDirectoryPath() +
                                      SIMULATOR_DEFAULT_PARAMETERS);
   if (!_parameters.isFullyInitialized()) {
@@ -114,7 +114,7 @@ SimControlPanel::SimControlPanel(QWidget* parent)
         _parameters.generateUnitializedList().c_str());
     throw std::runtime_error("simulator not initialized");
   } else {
-    printf("\tsim parameters are all good\n");
+    LOG(INFO) << "\tsim parameters are all good";
   }
   loadSimulationParameters(_parameters);
 
@@ -365,7 +365,7 @@ void SimControlPanel::on_startButton_clicked() {
   _simulationMode = ui->simulatorButton->isChecked();
 
   // graphics
-  printf("[SimControlPanel] Initialize Graphics...\n");
+  LOG(INFO) << "[SimControlPanel] Initialize Graphics...";
   _graphicsWindow = new Graphics3D();
   _graphicsWindow->show();
   _graphicsWindow->resize(1280, 720);
@@ -374,7 +374,7 @@ void SimControlPanel::on_startButton_clicked() {
     // run a simulation
 
     try {
-      printf("[SimControlPanel] Initialize simulator...\n");
+      LOG(INFO) << "[SimControlPanel] Initialize simulator...";
       _simulation = new Simulation(robotType, _graphicsWindow, _parameters, _userParameters,
         // this will allow the simulation thread to poke us when there's a state change
         [this](){
@@ -384,7 +384,7 @@ void SimControlPanel::on_startButton_clicked() {
       loadRobotParameters(_simulation->getRobotParams());
 
       // terrain
-      printf("[SimControlParameter] Load terrain...\n");
+      LOG(INFO) << "[SimControlParameter] Load terrain...";
       _simulation->loadTerrainFile(_terrainFileName);
     } catch (std::exception& e) {
       createErrorMessage("FATAL: Exception thrown during simulator setup\n" + std::string(e.what()));

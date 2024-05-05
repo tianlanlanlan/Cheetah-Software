@@ -90,6 +90,7 @@ void Leg_InvDyn_Controller::runController(){
   // Make sure they match
   Vec18<float> err = generalizedForce - generalizedForce2;
   assert( err.norm() < 1e-4 );
+  static_cast<void>(err);
 
   // Send joint torques to leg controllers
   int dof = 0;

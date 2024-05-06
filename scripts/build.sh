@@ -18,8 +18,11 @@ check_conan() {
 }
 
 build() {
-  build_dir=$repo_root_dir/build
+  # build lcm types
+  lcm_check_file=$repo_root_dir/lcm-types/file_list.txt
+  [ ! -f $lcm_check_file ] && (bash scripts/make_types.sh || (echo "Failed to build lcm types" && exit 1))
 
+  build_dir=$repo_root_dir/build
   [ ! -d $build_dir ] && rebuild=1 || rebuild=0
   [ $# = 1 ] && rebuild=$1
   if [ $rebuild = 1 ]; then

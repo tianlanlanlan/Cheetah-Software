@@ -54,14 +54,17 @@ else(MINI_CHEETAH_BUILD)
     -Wextra -Wcast-align -Wdisabled-optimization -Wformat=2 \
     -Winit-self -Wmissing-include-dirs -Woverloaded-virtual \
     -Wshadow -Wsign-promo")
-    include_directories("/usr/local/include/")   # lcm includes
   endif()
 
   set(CMAKE_C_FLAGS "-O3  -ggdb  -march=native -std=gnu99 -I.")
   message("**** Mini-Cheetah build disabled ****")
 endif(MINI_CHEETAH_BUILD)
 
-#find_package(lcm)
+set(LCM_INSTALL_PATH "${PROJECT_SOURCE_DIR}/third-party/lcm-1.5.0/output")
+set(LCM_HEADER_PATH "${LCM_INSTALL_PATH}/include")
+list(APPEND CMAKE_MODULE_PATH "${LCM_INSTALL_PATH}/share/lcm/cmake")
+include_directories(${LCM_HEADER_PATH})
+find_package(lcm REQUIRED)
 find_package(glog REQUIRED)
 find_package(Eigen3 REQUIRED)
 

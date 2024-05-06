@@ -1,7 +1,7 @@
 #ifndef _RobotState
 #define _RobotState
 
-#include "Eigen/Dense"
+#include <Eigen/Dense>
 #include "common_types.h"
 
 using Eigen::Matrix;

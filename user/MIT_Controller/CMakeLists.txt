@@ -8,7 +8,6 @@ include_directories(SYSTEM "../../third-party/qpOASES/include")
 include_directories("../../third-party/ParamHandler")
 
 include_directories("../../lcm-types/cpp")
-include_directories("/usr/local/include/") # lcm includes
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 

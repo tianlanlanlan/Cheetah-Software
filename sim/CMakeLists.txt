@@ -4,6 +4,7 @@ project(sim)
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt5 REQUIRED)
+find_package(FreeGLUT REQUIRED)
 
 # Instruct CMake to run moc automatically when needed
 set(CMAKE_AUTOMOC ON)
@@ -26,7 +27,6 @@ QT5_WRAP_CPP(tst_hdr_moc ${QOBJECT_HEADERS})
 include_directories("include/")
 include_directories("../common/include/")
 include_directories("../lcm-types/cpp")
-include_directories("/usr/local/include/")   # lcm includes
 include_directories("../third-party/ParamHandler")
 include_directories(${CMAKE_BINARY_DIR})
 file(GLOB sources "src/*.cpp")
@@ -41,6 +41,7 @@ add_executable(sim ${sources} ${tst_hdr_moc})
 target_link_libraries(sim
   biomimetics lcm inih dynacore_param_handler
   # Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Gamepad
+  FreeGLUT::freeglut
   qt::qt
   ${OPENGL_LIBRARIES}
   pthread

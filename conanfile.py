@@ -20,6 +20,7 @@ class Cheetah(ConanFile):
         self.requires("gtest/1.14.0")
         self.requires("eigen/3.4.0")
         self.requires("qt/5.15.13")
+        self.requires("freeglut/3.4.0")
 
     def generate(self):
         tc = CMakeToolchain(self)
@@ -32,6 +33,11 @@ class Cheetah(ConanFile):
 
     def config_options(self):
         self.options["qt"].qtgamepad = True
+        self.options["qt"].with_harfbuzz = False
+        self.options["qt"].with_mysql = False
+        self.options["qt"].with_pq = False
+        self.options["qt"].with_x11 = False
+        self.options["qt"].with_sqlite3 = False
 
     def build(self):
         cmake = CMake(self)

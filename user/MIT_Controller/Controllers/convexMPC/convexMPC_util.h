@@ -2,6 +2,6 @@
 #define _convexMPC_util
 
 #include "common_types.h"
-#include "Eigen/Dense"
+#include <Eigen/Dense>
 
 #endif

@@ -13,7 +13,6 @@ The third-party will contain *small* third party libraries that we have modified
 $ sudo apt install \
   openjdk-8-jdk \
   ccache \
-  freeglut3-dev \
   mesa-common-dev \
   libblas-dev liblapack-dev \
   -y
@@ -28,7 +27,7 @@ $ sh scripts/build.sh
 $ sh scripts/run_sim.sh
 
 # run mit controller in other window
-sh scripts/run_robot.sh
+$ sh scripts/run_robot.sh
 ```
 
 ## Build

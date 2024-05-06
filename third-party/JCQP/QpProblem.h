@@ -2,8 +2,8 @@
 #define QPSOLVER_QPPROBLEM_H
 
 #include <vector>
-#include "Eigen/SparseCholesky"
-#include "Eigen/Sparse"
+#include <Eigen/SparseCholesky>
+#include <Eigen/Sparse>
 #include "types.h"
 #include "CholeskyDenseSolver.h"
 #include "CholeskySparseSolver.h"

@@ -33,7 +33,7 @@ RobotRunner::RobotRunner(RobotController* robot_ctrl,
  * robot data, and any control logic specific data.
  */
 void RobotRunner::init() {
-  LOG(INFO) << "[RobotRunner] initialize";
+  LOG(INFO) << "[RobotRunner] initialize start";
 
   // Build the appropriate Quadruped object
   if (robotType == RobotType::MINI_CHEETAH) {
@@ -44,23 +44,26 @@ void RobotRunner::init() {
 
   // Initialize the model and robot data
   _model = _quadruped.buildModel();
-  _jpos_initializer = new JPosInitializer<float>(3., controlParameters->controller_dt);
+  _jpos_initializer =
+      new JPosInitializer<float>(3., controlParameters->controller_dt);
+  LOG(INFO) << "[RobotRunner] Initialized the model and robot data";
 
   // Always initialize the leg controller and state entimator
+  LOG(INFO) << "[RobotRunner] LegController";
   _legController = new LegController<float>(_quadruped);
+  LOG(INFO) << "[RobotRunner] StateEstimatorContainer";
   _stateEstimator = new StateEstimatorContainer<float>(
-      cheaterState, vectorNavData, _legController->datas,
-      &_stateEstimate, controlParameters);
+      cheaterState, vectorNavData, _legController->datas, &_stateEstimate,
+      controlParameters);
+  LOG(INFO) << "[RobotRunner] initializeStateEstimator";
   initializeStateEstimator(false);
 
   memset(&rc_control, 0, sizeof(rc_control_settings));
   // Initialize the DesiredStateCommand object
-  _desiredStateCommand =
-    new DesiredStateCommand<float>(driverCommand,
-        &rc_control,
-        controlParameters,
-        &_stateEstimate,
-        controlParameters->controller_dt);
+  LOG(INFO) << "[RobotRunner] Initialize the DesiredStateCommand object";
+  _desiredStateCommand = new DesiredStateCommand<float>(
+      driverCommand, &rc_control, controlParameters, &_stateEstimate,
+      controlParameters->controller_dt);
 
   // Controller initializations
   _robot_ctrl->_model = &_model;
@@ -68,14 +71,15 @@ void RobotRunner::init() {
   _robot_ctrl->_legController = _legController;
   _robot_ctrl->_stateEstimator = _stateEstimator;
   _robot_ctrl->_stateEstimate = &_stateEstimate;
-  _robot_ctrl->_visualizationData= visualizationData;
+  _robot_ctrl->_visualizationData = visualizationData;
   _robot_ctrl->_robotType = robotType;
   _robot_ctrl->_driverCommand = driverCommand;
   _robot_ctrl->_controlParameters = controlParameters;
   _robot_ctrl->_desiredStateCommand = _desiredStateCommand;
 
+  LOG(INFO) << "[RobotRunner] Initialize Controller";
   _robot_ctrl->initializeController();
-
+  LOG(INFO) << "[RobotRunner] initialize end";
 }
 
 /**

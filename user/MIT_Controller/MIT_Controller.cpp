@@ -9,6 +9,7 @@ MIT_Controller::MIT_Controller():RobotController(){  }
  */
 void MIT_Controller::initializeController() {
   // Initialize a new GaitScheduler object
+  LOG(INFO) << "Initialize GaitScheduler";
   _gaitScheduler = new GaitScheduler<float>(&userParameters, _controlParameters->controller_dt);
 
   // Initialize a new ContactEstimator object
@@ -16,10 +17,12 @@ void MIT_Controller::initializeController() {
   ////_contactEstimator->initialize();
 
   // Initializes the Control FSM with all the required data
+  LOG(INFO) << "Initialize the Control FSM start";
   _controlFSM = new ControlFSM<float>(_quadruped, _stateEstimator,
                                       _legController, _gaitScheduler,
                                       _desiredStateCommand, _controlParameters, 
                                       _visualizationData, &userParameters);
+  LOG(INFO) << "Initialize the Control FSM end ";
 }
 
 /**

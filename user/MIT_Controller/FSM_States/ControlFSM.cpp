@@ -42,6 +42,7 @@ ControlFSM<T>::ControlFSM(Quadruped<T>* _quadruped,
   data.userParameters = userParameters;
 
   // Initialize and add all of the FSM States to the state list
+  LOG(INFO) << "[ControlFSM] Initialize and add all of the FSM States to the state list";
   statesList.invalid = nullptr;
   statesList.passive = new FSM_State_Passive<T>(&data);
   statesList.jointPD = new FSM_State_JointPD<T>(&data);
@@ -50,13 +51,16 @@ ControlFSM<T>::ControlFSM(Quadruped<T>* _quadruped,
   statesList.balanceStand = new FSM_State_BalanceStand<T>(&data);
   statesList.locomotion = new FSM_State_Locomotion<T>(&data);
   statesList.recoveryStand = new FSM_State_RecoveryStand<T>(&data);
+  LOG(INFO) << "[ControlFSM] Initialize FSM_State_Vision start";
   statesList.vision = new FSM_State_Vision<T>(&data);
+  LOG(INFO) << "[ControlFSM] Initialize FSM_State_Vision end";
   statesList.backflip = new FSM_State_BackFlip<T>(&data);
   statesList.frontJump = new FSM_State_FrontJump<T>(&data);
 
   safetyChecker = new SafetyChecker<T>(&data);
 
   // Initialize the FSM with the Passive FSM State
+  LOG(INFO) << "[ControlFSM] Initialize the FSM with the Passive FSM State";
   initialize();
 }
 

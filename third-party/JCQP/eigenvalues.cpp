@@ -1,5 +1,5 @@
 #include "eigenvalues.h"
-#include "Eigen/Eigenvalues"
+#include <Eigen/Eigenvalues>
 
 /*!
  * Adjust a matrix so that its eigenvalues are less than a given magnitude.

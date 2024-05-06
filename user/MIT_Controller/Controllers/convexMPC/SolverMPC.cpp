@@ -2,7 +2,7 @@
 #include "common_types.h"
 #include "convexMPC_interface.h"
 #include "RobotState.h"
-#include "Eigen/Dense"
+#include <Eigen/Dense>
 #include <cmath>
 #include <unsupported/Eigen/MatrixFunctions>
 //#include <unsupported/Eigen/MatrixFunctions>

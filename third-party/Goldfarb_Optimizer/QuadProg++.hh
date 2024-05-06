@@ -67,7 +67,7 @@ s.t.
 #endif  // #if __cplusplus > 199711L
 
 #include "Array.hh"
-#include "Eigen/Dense"
+#include <Eigen/Dense>
 
 using namespace GolDIdnani;
 

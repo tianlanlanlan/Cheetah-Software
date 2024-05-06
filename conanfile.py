@@ -21,6 +21,7 @@ class Cheetah(ConanFile):
         self.requires("eigen/3.4.0")
         self.requires("qt/5.15.13")
         self.requires("freeglut/3.4.0")
+        self.requires("xkbcommon/1.5.0", override=True)
 
     def generate(self):
         tc = CMakeToolchain(self)
@@ -36,7 +37,7 @@ class Cheetah(ConanFile):
         self.options["qt"].with_harfbuzz = False
         self.options["qt"].with_mysql = False
         self.options["qt"].with_pq = False
-        self.options["qt"].with_x11 = False
+        self.options["qt"].with_odbc = False
         self.options["qt"].with_sqlite3 = False
 
     def build(self):

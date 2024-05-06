@@ -8,6 +8,7 @@ if [ $save_core_dump = 1 ]; then
   sudo sysctl -w kernel.core_pattern="$repo_root/core_%e.%p"
 fi
 
+# export QT_DEBUG_PLUGINS=1
 cd $repo_root/build
 . ./conan/conanrun.sh
 ./sim/sim

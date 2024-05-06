@@ -16,6 +16,7 @@
  */
 void SimulationBridge::run() {
   // init shared memory:
+  LOG(INFO) << "Init shared memory";
   _sharedMemory.attach(DEVELOPMENT_SIMULATOR_SHARED_MEMORY_NAME);
   _sharedMemory().init();
 

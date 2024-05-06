@@ -35,7 +35,7 @@ BalanceController::BalanceController()
 
   lcm = new lcm::LCM("udpm://239.255.76.67:7667?ttl=1");
   if (lcm->good()) {
-    LOG(INFO) << "LCM IN BALANCE CONTROL INITIALIZED";
+    // LOG(INFO) << "LCM IN BALANCE CONTROL INITIALIZED";
   } else {
     LOG(FATAL) << "LCM IN BALANCE CONTROLLER FAILED";
     exit(-1);

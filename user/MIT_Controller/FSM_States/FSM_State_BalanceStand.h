@@ -19,16 +19,16 @@ class FSM_State_BalanceStand : public FSM_State<T> {
   void onEnter() override;
 
   // Run the normal behavior for the state
-  void run();
+  void run() override;
 
   // Checks for any transition triggers
-  FSM_StateName checkTransition();
+  FSM_StateName checkTransition() override;
 
   // Manages state specific transitions
-  TransitionData<T> transition();
+  TransitionData<T> transition() override;
 
   // Behavior to be carried out when exiting a state
-  void onExit();
+  void onExit() override;
 
  private:
   // Keep track of the control iterations

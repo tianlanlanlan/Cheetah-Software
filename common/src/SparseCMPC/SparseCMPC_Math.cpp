@@ -1,5 +1,5 @@
 #include "SparseCMPC/SparseCMPC.h"
-#include "Eigen/Dense"
+#include <Eigen/Dense>
 #include <unsupported/Eigen/MatrixFunctions>
 
 

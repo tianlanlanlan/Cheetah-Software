@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <ParamHandler.hpp>
 #include <leg_control_command_lcmt.hpp>
+#include "Utilities/utilities.h"
 #include "ui_SimControlPanel.h"
 #include "JoystickTest.h"
 
@@ -81,6 +82,7 @@ SimControlPanel::SimControlPanel(QWidget* parent)
       _ctrlVisionLCM(getLcmUrl(255)),
       _miniCheetahDebugLCM(getLcmUrl(255))
 {
+  LOG(INFO) << "[SimControlPanel] Init start";
 
   ui->setupUi(this); // QT setup
   updateUiEnable();  // enable/disable buttons as needed.
@@ -138,6 +140,7 @@ SimControlPanel::SimControlPanel(QWidget* parent)
      _miniCheetahDebugLCM.handle();
   });
 
+  LOG(INFO) << "[SimControlPanel] Init done";
 }
 
 void SimControlPanel::handleVelocityCMDLCM(const lcm::ReceiveBuffer* rbuf, 

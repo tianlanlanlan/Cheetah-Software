@@ -25,6 +25,7 @@ set(CMAKE_COLOR_MAKEFILE   ON)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 option(MINI_CHEETAH_BUILD "use compiler flags for mini cheetah computer" OFF)
+option(ENABLE_ASAN "Enable asan option" OFF)
 set(BUILD_TYPE_RELEASE TRUE)
 
 option(NO_SIM "Do not build simulator" OFF)
@@ -59,6 +60,13 @@ else(MINI_CHEETAH_BUILD)
   set(CMAKE_C_FLAGS "-O3  -ggdb  -march=native -std=gnu99 -I.")
   message("**** Mini-Cheetah build disabled ****")
 endif(MINI_CHEETAH_BUILD)
+
+message(STATUS "ENABLE_ASAN: ${ENABLE_ASAN}")
+if(ENABLE_ASAN)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address")
+endif()
+
 
 set(LCM_INSTALL_PATH "${PROJECT_SOURCE_DIR}/third-party/lcm-1.5.0/output")
 set(LCM_HEADER_PATH "${LCM_INSTALL_PATH}/include")

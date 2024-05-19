@@ -107,14 +107,13 @@ void RobotRunner::run() {
   } else {
     _legController->setEnabled(true);
 
-    if( (rc_control.mode == 0) && controlParameters->use_rc ) {
-      if (count_ini % 1000 == 0)
-        LOG(WARNING) << "ESTOP!";
+    if ((rc_control.mode == 0) && controlParameters->use_rc == 1) {
+      LOG_IF(WARNING, (count_ini % 1000 == 0)) << "ESTOP!";
       for (int leg = 0; leg < 4; leg++) {
         _legController->commands[leg].zero();
       }
       _robot_ctrl->Estop();
-    }else {
+    } else {
       // Controller
       if (!_jpos_initializer->IsInitialized(_legController)) {
         Mat3<float> kpMat;
@@ -144,7 +143,6 @@ void RobotRunner::run() {
         cheetahMainVisualization->p = _stateEstimate.position;
       }
     }
-
   }
 
 

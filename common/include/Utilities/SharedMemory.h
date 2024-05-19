@@ -206,26 +206,26 @@ class SharedMemoryObject {
     _fd = shm_open(name.c_str(), O_RDWR,
                    S_IWUSR | S_IRUSR | S_IWGRP | S_IRGRP | S_IROTH);
     if (_fd == -1) {
-      printf("[ERROR] SharedMemoryObject::attach shm_open(%s) failed: %s\n",
-             _name.c_str(), strerror(errno));
+      LOG(ERROR) << "[ERROR] SharedMemoryObject::attach shm_open("
+                 << _name.c_str() << ") failed: " << strerror(errno);
       throw std::runtime_error("Failed to create shared memory!");
       return;
     }
 
     struct stat s;
     if (fstat(_fd, &s)) {
-      printf("[ERROR] SharedMemoryObject::attach(%s) stat: %s\n", name.c_str(),
-             strerror(errno));
+      LOG(ERROR) << "[ERROR] SharedMemoryObject::attach(" << name.c_str()
+                 << ") stat: " << strerror(errno);
       throw std::runtime_error("Failed to create shared memory!");
       return;
     }
 
     if ((size_t)s.st_size != _size) {
-      printf(
-          "[ERROR] SharedMemoryObject::attach(%s) on something that was "
-          "incorrectly "
-          "sized (size is %ld bytes, should be %ld)\n",
-          _name.c_str(), s.st_size, _size);
+      LOG(ERROR) << "[ERROR] SharedMemoryObject::attach(" << _name.c_str()
+                 << ") on something that was "
+                    "incorrectly "
+                    "sized (size is "
+                 << s.st_size << " bytes, should be " << _size << ")";
       throw std::runtime_error("Failed to create shared memory!");
       return;
     }

@@ -42,6 +42,7 @@ build() {
     . $build_dir/conan/conanbuild.sh
     cmake -S . -B $build_dir \
       -DCMAKE_BUILD_TYPE=$build_type \
+      -DENABLE_ASAN=OFF \
       -DCMAKE_TOOLCHAIN_FILE=$build_dir/conan/conan_toolchain.cmake
   fi
   . $build_dir/conan/conanbuild.sh

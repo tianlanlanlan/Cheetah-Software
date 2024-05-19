@@ -116,9 +116,9 @@ ec_adaptert * oshw_find_adapters(void)
           {
              string_len = EC_MAXLEN_ADAPTERNAME - 1;
           }
-          strncpy(adapter->name, ids[i].if_name,string_len);
+          strncpy(adapter->name, ids[i].if_name, EC_MAXLEN_ADAPTERNAME);
           adapter->name[string_len] = '\0';
-          strncpy(adapter->desc, ids[i].if_name,string_len);
+          strncpy(adapter->desc, ids[i].if_name, EC_MAXLEN_ADAPTERNAME);
           adapter->desc[string_len] = '\0';
       }
       else

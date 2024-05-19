@@ -39,7 +39,7 @@ void sbus_packet_complete() {
 
   float v_scale = data.knobs[0] * 1.5f + 2.0f; // from 0.5 to 3.5
   float w_scale = 2. * v_scale;                // from 1.0 to 7.0
-  // printf("v scale: %f\n", v_scale);
+  // LOG(INFO) << "v_scale = " << v_scale << ", w_scale = " << w_scale;
 
   auto estop_switch = data.right_lower_right_switch;
   auto mode_selection_switch = data.left_lower_left_switch;
@@ -50,13 +50,6 @@ void sbus_packet_complete() {
 
   int selected_mode = 0;
 
-  static int count = 0;
-  if (count >= 500) {
-    estop_switch = SWITCH_DOWN;
-    left_select = SWITCH_DOWN;
-  } else {
-    count++;
-  }
   // LOG(INFO) << "left_select = " << (int)left_select;
   // LOG(INFO) << "right_select = " << (int)right_select;
 
@@ -144,9 +137,6 @@ void sbus_packet_complete() {
       rc_control.variable[0] = gait_table[mode_id];
       // rc_control.v_des[0] = v_scale * data.left_stick[1] * 0.5;
       // rc_control.v_des[1] = v_scale * data.left_stick[0] * -1.;
-      // LOG(INFO) << "v_scale = " << v_scale;
-      LOG(INFO) << "data.left_stick[1] = " << data.left_stick[1];
-      LOG(INFO) << "data.left_stick[0] = " << data.left_stick[0];
       rc_control.v_des[0] = v_scale * data.left_stick[1];
       rc_control.v_des[1] = -v_scale * data.left_stick[0];
       rc_control.v_des[2] = 0;

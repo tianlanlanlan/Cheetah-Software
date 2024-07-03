@@ -11,6 +11,7 @@ The third-party will contain *small* third party libraries that we have modified
 ```shell
 # install dependencies
 $ sudo apt install \
+  libglib2.0-dev \
   openjdk-8-jdk \
   ccache \
   mesa-common-dev \

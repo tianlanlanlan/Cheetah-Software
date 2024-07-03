@@ -13,12 +13,16 @@ download_lcm() {
   lcm_src_dir=$third_party_dir/lcm-1.5.0
   [ -d $lcm_src_dir ] && echo "Found lcm source directory: $lcm_src_dir" && return
   lcm_src_url=https://github.com/lcm-proj/lcm/archive/refs/tags/v1.5.0.tar.gz
-  wget $lcm_src_url -P $third_party_dir
+  [ ! -f $third_party_dir/v1.5.0.tar.gz ] && wget $lcm_src_url -P $third_party_dir
   tar -xvf $third_party_dir/v1.5.0.tar.gz -C $third_party_dir
   echo "output/" >>$lcm_src_dir/.gitignore
 }
 
 build_lcm() {
+  # Fix java source code encoding error
+  sed -i "s|String spacer = \"  •  \"|String spacer = \" \\u2022 \"|g" $lcm_src_dir/lcm-java/lcm/spy/Spy.java
+  sed -i "s|String spacer = \"  •  \"|String spacer = \" \\u2022 \"|g" $lcm_src_dir/lcm-java/lcm/logging/LogPlayer.java
+
   lcm_build_dir=$lcm_src_dir/build
   lcm_install_dir=$lcm_src_dir/output
   rm -rf $lcm_build_dir $lcm_install_dir

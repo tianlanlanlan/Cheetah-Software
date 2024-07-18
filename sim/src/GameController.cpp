@@ -9,6 +9,7 @@
  */
 
 #include "GameController.h"
+#include "Utilities/utilities.h"
 
 #include <QtCore/QObject>
 #include <QtGamepad/QGamepad>
@@ -80,6 +81,7 @@ void GameController::updateGamepadCommand(GamepadCommand &gamepadCommand) {
         Vec2<float>(_qGamepad->axisRightX(), -_qGamepad->axisRightY());
   } else {
     gamepadCommand.zero();  // no joystick, return all zeros
+    gamepadCommand.leftStickAnalog = Vec2<float>(-0.0f, 0.5f); // Move front
   }
 
   // printf("%s\n", gamepadCommand.toString().c_str());

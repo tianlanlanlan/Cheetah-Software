@@ -331,6 +331,7 @@ void SimControlPanel::updateUiEnable() {
  */
 void SimControlPanel::updateTerrainLabel() {
   ui->terrainFileLabel->setText(QString(_terrainFileName.c_str()));
+  ui->terrainFileLabel->setFixedWidth(200);
 }
 
 /*!

@@ -27,6 +27,11 @@ build() {
   [ $# = 1 ] && rebuild=$1
   if [ $rebuild = 1 ]; then
     rm -rf $build_dir
+    # draw dependency graph
+    conan graph info conanfile.py \
+      -r=conancenter \
+      --format=html >graph.html
+    # download
     conan install conanfile.py \
       --output-folder $build_dir \
       --profile:host default \

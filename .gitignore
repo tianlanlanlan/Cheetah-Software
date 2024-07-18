@@ -33,3 +33,4 @@ lcm-types/lcm-gen
 CMakeUserPresets.json
 third-party/lcm*
 third-party/*.tar*
+graph.html
